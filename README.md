@@ -55,6 +55,7 @@ Open `.evn` then edit it with your settings. You will need:
 
 ## Create demo user
 Demo user ->  demo@demo.com : demo    
+    
     $ NODE_ENV=dev node generateUser.js
 
 ## Running the project
