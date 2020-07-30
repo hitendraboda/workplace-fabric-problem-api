@@ -113,3 +113,90 @@ exports.createDesk = async (req, res) => {
         res.status(500).send(err);
     }
 }
+
+exports.createChair = async (req, res) => {
+    try {
+        floor = await FloorModel.findById(req.body.floorId);
+        if (!floor) {
+            return res.status(404).json({
+                type: 'Error',
+                status: 'Not found',
+                message: 'Floor not found',
+                path: req.originalUrl
+            });
+        }
+
+        desk = floor.desks.find(d => d._id == req.body.deskId)
+
+        let bodyClone = { ...req.body };
+        delete bodyClone.floorId;
+        delete bodyClone.deskId;
+        desk.chairs.push(bodyClone);
+
+        let updateResponse = await FloorModel.update(req.body.floorId, floor);
+        let response = {
+            code: 'success',
+            message: 'Chair added',
+            data: updateResponse,
+        }
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+exports.deleteDesk = async (req, res) => {
+    try {
+        floor = await FloorModel.findById(req.params.floorId);
+        if (!floor) {
+            return res.status(404).json({
+                type: 'Error',
+                status: 'Not found',
+                message: 'Floor not found',
+                path: req.originalUrl
+            });
+        }
+
+        let filterDesk = floor.desks.filter(d => d._id != req.params.deskId)
+
+        floor.desks = filterDesk;
+
+        let updateResponse = await FloorModel.update(req.params.floorId, floor);
+        let response = {
+            code: 'success',
+            message: 'Desk deleted',
+            data: updateResponse,
+        }
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}
+
+exports.deleteChair = async (req, res) => {
+    try {
+        floor = await FloorModel.findById(req.params.floorId);
+        if (!floor) {
+            return res.status(404).json({
+                type: 'Error',
+                status: 'Not found',
+                message: 'Floor not found',
+                path: req.originalUrl
+            });
+        }
+
+        desk = floor.desks.find(d => d._id == req.params.deskId)
+        let chairs = desk.chairs.filter(c => c._id != req.params.chairId);
+        desk.chairs = chairs;
+
+        let updateResponse = await FloorModel.update(req.params.floorId, floor);
+        let response = {
+            code: 'success',
+            message: 'Chair deleted',
+            data: updateResponse,
+        }
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+}

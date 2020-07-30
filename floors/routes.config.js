@@ -32,4 +32,19 @@ exports.routesConfig = function (app) {
         ValidationMiddleware.validJWTNeeded,
         FloorsController.createDesk
     ]);
+
+    app.post('/api/floor/desk/chair', [
+        ValidationMiddleware.validJWTNeeded,
+        FloorsController.createChair
+    ]);
+
+    app.delete('/api/floor/desk/:floorId/:deskId', [
+        ValidationMiddleware.validJWTNeeded,
+        FloorsController.deleteDesk
+    ]);
+
+    app.delete('/api/floor/desk/chair/:floorId/:deskId/:chairId', [
+        ValidationMiddleware.validJWTNeeded,
+        FloorsController.deleteChair
+    ]);
 };
